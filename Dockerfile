@@ -30,8 +30,18 @@ RUN apt-get update -qqy \
 COPY . /srv/webvirtcloud
 RUN chown -R www-data:www-data /srv/webvirtcloud
 
-# Setup webvirtcloud
 WORKDIR /srv/webvirtcloud
+
+## FIXME: This should ideally be automatically ran on startup,
+##        not when creating the image..
+# Run pre-setup logic (https://github.com/retspen/webvirtcloud/wiki/Docker-Installation-&-Update)
+RUN cp webvirtcloud/settings.py.template webvirtcloud/settings.py
+RUN cat webvirtcloud/settings.py && \
+    export SECRET_KEY=`python3 conf/runit/secret_generator.py` && \
+    sed -i 's/SECRET_KEY = \"\"/SECRET_KEY = \"$SECRET_KEY\"/' webvirtcloud/settings.py && \
+    cat webvirtcloud/settings.py
+
+# Setup webvirtcloud
 RUN python3 -m venv venv && \
 	. venv/bin/activate && \
 	pip3 install -U pip && \
