@@ -38,7 +38,7 @@ WORKDIR /srv/webvirtcloud
 RUN cp webvirtcloud/settings.py.template webvirtcloud/settings.py
 RUN cat webvirtcloud/settings.py && \
     export SECRET_KEY=`python3 conf/runit/secret_generator.py` && \
-    sed -i 's/SECRET_KEY = \"\"/SECRET_KEY = \"$SECRET_KEY\"/' webvirtcloud/settings.py && \
+    sed -i "s/SECRET_KEY = \"\"/SECRET_KEY = \"$SECRET_KEY\"/" webvirtcloud/settings.py && \
     cat webvirtcloud/settings.py
 
 # Setup webvirtcloud
